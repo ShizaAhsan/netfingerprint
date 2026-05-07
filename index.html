@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetFingerprint — Network Behavior Profiler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="scanline"></div>
+<div class="noise"></div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-bracket">[</span>
+      <span class="logo-text">NET</span><span class="logo-accent">FINGERPRINT</span>
+      <span class="logo-bracket">]</span>
+    </div>
+    <div class="header-sub">Network Behavior Profiler v1.0</div>
+    <div class="status-bar">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">READY</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- TAB NAVIGATION -->
+  <div class="tabs">
+    <button class="tab active" data-tab="capture">CAPTURE</button>
+    <button class="tab" data-tab="compare">COMPARE</button>
+  </div>
+
+  <!-- CAPTURE TAB -->
+  <div class="tab-content active" id="tab-capture">
+    <div class="panel capture-panel">
+      <div class="panel-header">
+        <span class="panel-title">// PACKET CAPTURE</span>
+        <span class="panel-hint">Requires sudo/root privileges</span>
+      </div>
+
+      <div class="input-group">
+        <div class="input-row">
+          <div class="field">
+            <label>TARGET URL</label>
+            <input type="text" id="urlInput" placeholder="example.com or https://example.com" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field field-small">
+            <label>DURATION (SEC)</label>
+            <input type="number" id="durationInput" value="10" min="3" max="30">
+          </div>
+        </div>
+        <button class="btn-capture" id="captureBtn" onclick="startCapture('A')">
+          <span class="btn-text">▶ CAPTURE TRAFFIC</span>
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-container" id="progressContainer" style="display:none">
+        <div class="progress-label">
+          <span id="progressLabel">Initializing capture...</span>
+          <span id="progressTimer">0s</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-packets">
+          <span class="blink">●</span> CAPTURING LIVE PACKETS
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="resultsA" class="results" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- COMPARE TAB -->
+  <div class="tab-content" id="tab-compare">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">// COMPARE TWO WEBSITES</span>
+        <span class="panel-hint">Capture both sites first, then compare</span>
+      </div>
+
+      <div class="compare-inputs">
+        <div class="compare-side">
+          <div class="compare-label">SITE A</div>
+          <div class="field">
+            <label>URL</label>
+            <input type="text" id="urlA" placeholder="site-a.com" spellcheck="false">
+          </div>
+          <div class="field field-small">
+            <label>DURATION</label>
+            <input type="number" id="durA" value="10" min="3" max="30">
+          </div>
+          <button class="btn-capture btn-secondary" onclick="startCapture('A')" id="captureBtnA">▶ CAPTURE A</button>
+          <div class="capture-status" id="statusA">NOT CAPTURED</div>
+        </div>
+
+        <div class="vs-divider">VS</div>
+
+        <div class="compare-side">
+          <div class="compare-label">SITE B</div>
+          <div class="field">
+            <label>URL</label>
+            <input type="text" id="urlB" placeholder="site-b.com" spellcheck="false">
+          </div>
+          <div class="field field-small">
+            <label>DURATION</label>
+            <input type="number" id="durB" value="10" min="3" max="30">
+          </div>
+          <button class="btn-capture btn-secondary" onclick="startCapture('B')" id="captureBtnB">▶ CAPTURE B</button>
+          <div class="capture-status" id="statusB">NOT CAPTURED</div>
+        </div>
+      </div>
+
+      <button class="btn-capture btn-compare" id="compareBtn" onclick="runComparison()" disabled>
+        ⚡ COMPARE FINGERPRINTS
+      </button>
+
+      <div id="compareProgress" style="display:none" class="progress-container">
+        <div class="progress-label"><span id="compareProgressLabel">Capturing...</span><span id="compareTimer">0s</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="compareProgressFill"></div></div>
+        <div class="progress-packets"><span class="blink">●</span> LIVE CAPTURE IN PROGRESS</div>
+      </div>
+
+      <div id="compareResults" class="results" style="display:none"></div>
+    </div>
+  </div>
+</main>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
